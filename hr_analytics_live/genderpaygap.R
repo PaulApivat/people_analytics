@@ -20,3 +20,47 @@ options(scipen = 999)
 # load data
 gd_data = read_csv("https://glassdoor.box.com/shared/static/beukjzgrsu35fqe59f7502hruribd5tt.csv")
 
+###### DATA CLEANING AND PREP ######
+# NOTE: new way to create age-brackets as factors
+
+gd_data %>%
+    mutate(age_bin = cut(age, 
+                    breaks = c(0, 25, 35, 45, 55, Inf), 
+                    right = FALSE)) %>%
+    # create new column: total compensation
+    mutate(total_pay = basePay + bonus) %>%
+    # create log of compensation 
+    mutate(log_base = log(basePay, base = exp(1)), 
+             log_total = log(total_pay, base = exp(1)), 
+             # Add +1 to allow for log of 0 bonus values
+             log_bonus = log(bonus + 1, base = exp(1))) %>%
+    # create flags
+    mutate_if(is_character, fct_infreq) %>% 
+    mutate(age_bin = fct_infreq(age_bin)) -> gd_data_clean
+
+gd_data_clean
+
+## quickly find missing data in any column
+sapply(gd_data_clean, function(x) sum(is.na(x)))
+
+# get summary statistics for basePay by gender
+gd_data_clean %>%
+    filter(!is.na(basePay)) %>%
+    group_by(gender) %>%
+    summarize(mean_base = mean(basePay), 
+              median_base = median(basePay), 
+              count = n()) -> gd_summary_gender_base
+
+gd_summary_gender_base
+
+# get summary statistic for total pay by gender
+gd_data_clean %>% 
+    filter(!is.na(total_pay)) %>% 
+    group_by(gender) %>% 
+    summarize(total_mean = mean(total_pay), 
+              total_median = median(total_pay), 
+              count = n()) -> gd_summary_gender_total
+
+gd_summary_gender_total
+
+
