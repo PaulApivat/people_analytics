@@ -43,7 +43,7 @@ gd_data_clean
 ## quickly find missing data in any column
 sapply(gd_data_clean, function(x) sum(is.na(x)))
 
-# get summary statistics for basePay by gender
+# get summary statistics for BASEPAY by gender
 gd_data_clean %>%
     filter(!is.na(basePay)) %>%
     group_by(gender) %>%
@@ -53,7 +53,7 @@ gd_data_clean %>%
 
 gd_summary_gender_base
 
-# get summary statistic for total pay by gender
+# get summary statistic for TOTAL pay by gender
 gd_data_clean %>% 
     filter(!is.na(total_pay)) %>% 
     group_by(gender) %>% 
@@ -63,4 +63,14 @@ gd_data_clean %>%
 
 gd_summary_gender_total
 
+
+# get summary statistic for BONUS pay by gender
+gd_data_clean %>% 
+    filter(!is.na(total_pay)) %>% 
+    group_by(gender) %>% 
+    summarize(bonus_mean = mean(bonus), 
+              bonus_median = median(bonus), 
+              count = n()) -> gd_summary_gender_bonus
+
+gd_summary_gender_bonus
 
