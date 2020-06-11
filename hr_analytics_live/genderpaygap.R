@@ -74,7 +74,7 @@ gd_data_clean %>%
 
 gd_summary_gender_bonus
 
-# Total Pay summary by gender and department 
+# Total Pay (Performance evaluation?) summary by gender and department 
 gd_data_clean %>% 
     filter(!is.na(total_pay)) %>% 
     group_by(dept, gender) %>% 
@@ -88,7 +88,7 @@ gd_data_clean %>%
 
 gd_summary_dept_gender_total
 
-# Total Pay summary by gender and jobTitle
+# Total Pay (Performance evaluation?) summary by gender and jobTitle
 gd_data_clean %>% 
     filter(!is.na(total_pay)) %>% 
     group_by(jobTitle, gender) %>% 
@@ -101,3 +101,21 @@ gd_data_clean %>%
         spread(combo, value) -> gd_summary_job_gender_total
 
 gd_summary_job_gender_total
+
+
+### Breaking down gather, unite, spread
+
+## gather(measure, value, mean_perf:count)   
+# - measure = three groupings created in summarize(): mean_perf, median_perf and count
+# - value = their values
+# - mean_perf:count = select all three variables inclusive
+# - gather(measure, value) forms a key-value pair
+
+## unite(combo, measure, gender)
+# - combo = combine 'measure' and 'gender' (median_perf_Male, median_perf_Female, count_Male, count_Female etc)
+
+## spread(combo, value)
+# - transform dataframe from long to wide using combo of 'measure' and 'gender' and their values
+# - same as transpose function in excel
+
+## total flow: gather, take three new variables, unite with gender, change dataframe from long-to-wide
