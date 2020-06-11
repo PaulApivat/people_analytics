@@ -74,14 +74,30 @@ gd_data_clean %>%
 
 gd_summary_gender_bonus
 
-## Performance valuation (proxy total_pay) summary by gender and department
+# Total Pay summary by gender and department 
 gd_data_clean %>% 
     filter(!is.na(total_pay)) %>% 
     group_by(dept, gender) %>% 
     summarize(mean_perf = mean(total_pay), median_perf = median(total_pay), count = n()) %>%
+        # "unpivot" the data
         gather(measure, value, mean_perf:count) %>%
+        # combine gender with measure
         unite(combo, measure, gender) %>%
+        # "pivot" the data to see all measures split by gender
         spread(combo, value) -> gd_summary_dept_gender_total
 
 gd_summary_dept_gender_total
 
+# Total Pay summary by gender and jobTitle
+gd_data_clean %>% 
+    filter(!is.na(total_pay)) %>% 
+    group_by(jobTitle, gender) %>% 
+    summarize(mean_perf = mean(total_pay), median_perf = median(total_pay), count = n()) %>% 
+        # 'unpivot' the data
+        gather(measure, value, mean_perf:count) %>% 
+        # combine gender with measure
+        unite(combo, measure, gender) %>% 
+        # 'pivot' the data to see all measures split by gender
+        spread(combo, value) -> gd_summary_job_gender_total
+
+gd_summary_job_gender_total
