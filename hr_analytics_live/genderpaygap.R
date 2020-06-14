@@ -11,6 +11,9 @@ library(tidyverse)
 library(tidymodels)
 library(devtools)
 
+# load saved environment
+load(file = 'genderpaygap.RData')
+
 # warning
 install.packages('HRAnalytics')  #package ‘HRAnalytics’ is not available (for R version 3.6.3)
 
@@ -119,4 +122,27 @@ gd_summary_job_gender_total
 # - same as transpose function in excel
 
 ## total flow: gather, take three new variables, unite with gender, change dataframe from long-to-wide
+
+######------------- MODEL ESTIMATION - Ordinary Least Squares with controls.----------- ########
+# note: coefficient on "male" has the interpretation of approximate male pay advantage ('gender pay gap')
+
+gd_data_clean
+
+#### Logarithm of Base Pay
+# note: with various 'controls'
+
+
+# no control
+lm_gender <- lm(log_base ~ gender, data = gd_data_clean)
+# add 'human capital' controls
+lm_humancapital <- lm(log_base ~ gender + perfEval + age_bin + edu, data = gd_data_clean)
+# add all controls ("adjusted" pay gap)
+lm_allcontrols <- lm(log_base ~ gender 
+                                + perfEval 
+                                + age_bin 
+                                + edu 
+                                + dept 
+                                + seniority 
+                                + jobTitle, 
+                                data = gd_data_clean)
 
