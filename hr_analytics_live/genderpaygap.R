@@ -130,7 +130,8 @@ gd_data_clean
 
 #### Logarithm of Base Pay
 # note: with various 'controls'
-
+## I'm EXPECTING model comparisons when I see three successive models each with more controls
+## than the previous.
 
 # no control
 lm_gender <- lm(log_base ~ gender, data = gd_data_clean)
@@ -146,3 +147,39 @@ lm_allcontrols <- lm(log_base ~ gender
                                 + jobTitle, 
                                 data = gd_data_clean)
 
+
+##-------------------------- Visualize (No Control)
+
+# get regression table
+lm_gender %>% summary()
+
+# plot
+lm_gender %>% 
+    augment() %>% 
+    rename(actual = log_base, predicted = .fitted) %>% 
+    + ggplot() 
+    + aes(x=actual, y=predicted) 
+    + geom_point() 
+    + geom_abline(color ='blue', slope = 1, intercept = 0) 
+    + facet_wrap(~gender) 
+    + labs(title = 'Actual vs predicted', 
+        subtitle = 'Values predicted using a linear model containing gender')
+
+
+##-------------------------- Visualize (HUMAN CAPITAL CONTROL)
+
+# get regression table
+lm_humancapital %>% summary()
+
+# plot visual human capital control 
+lm_humancapital %>% 
+    augment() %>% 
+    rename(actual = log_base, predicted = .fitted) %>% 
+    ggplot() 
+    # color plot by gender
+    + aes(x=actual, y=predicted, color = gender) 
+    + geom_point() 
+    + geom_abline(color = 'blue', slope = 1, intercept = 0) 
+    + facet_wrap(~gender) 
+    + labs(title = 'Actual vs Predicted', 
+        subtitle = 'Values predicted using a linear model containing human capital measures')
