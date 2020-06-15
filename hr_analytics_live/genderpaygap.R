@@ -201,3 +201,60 @@ lm_allcontrols %>%
     + labs(title = 'Actual vs predicted', 
         subtitle = "Values predicted using a linear model all controls")
 
+
+
+###### Comparing all 3 models #######
+
+# gather up all the models
+list(lm_gender, lm_humancapital, lm_allcontrols) %>%
+    # extract coefficients for all models at once and combine into a single table
+    map_df(tidy, .id = "model") %>%
+    # filter to see the impact of gender
+    filter(term=="genderFemale") %>%
+    # p-values less than 0.05 are usually taken to mean an estimate is reliable
+    select(model, log_gap=estimate, p.value)
+
+
+####### Interaction of Gender x Department #######
+
+lm_allcontrols_dept <- lm(log_base ~ gender*dept 
+                                    + perfEval 
+                                    + age_bin 
+                                    + edu 
+                                    + seniority 
+                                    + jobTitle, data = gd_data_clean)
+
+tidy(lm_allcontrols_dept)   
+
+# plot
+lm_allcontrols_dept %>% 
+    augment() %>% 
+    rename(actual = log_base, predicted = .fitted) %>% 
+    ggplot() 
+        + aes(x=actual, y=predicted, color=gender) 
+        + geom_point() 
+        + geom_abline(color = 'red', slope = 1, intercept = 0) 
+        + facet_wrap(~gender) 
+        + labs(title = 'Actual vs predicted', 
+            subtitle = "Values predicted using a linear model all controls & department interaction")
+
+
+####### Interaction of Results x Job Title #######
+
+# All controls with department interaction terms. 
+lm_allcontrols_job <- lm(log_base ~ gender*jobTitle + perfEval + age_bin + edu + seniority + dept, data = gd_data_clean)
+
+tidy(lm_allcontrols_job)
+
+# plot 
+lm_allcontrols_job %>% 
+    augment() %>% 
+    rename(actual = log_base, predicted = .fitted) %>% 
+    ggplot() 
+    + aes(x=actual, y=predicted, color=gender) 
+    + geom_point() 
+    + geom_abline(color = 'black', slope = 1, intercept = 0) 
+    + facet_wrap(~gender) 
+    + labs(title = 'Actual vs predicted', 
+        subtitle = "Values predicted using a linear model all controls & job interaction")
+
