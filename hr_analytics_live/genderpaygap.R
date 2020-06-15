@@ -183,3 +183,21 @@ lm_humancapital %>%
     + facet_wrap(~gender) 
     + labs(title = 'Actual vs Predicted', 
         subtitle = 'Values predicted using a linear model containing human capital measures')
+
+##-------------------------- Visualize (ALL CONTROLS)
+
+lm_allcontrols %>% summary()
+
+
+# plot
+lm_allcontrols %>%
+    augment() %>%
+    rename(actual = log_base, predicted = .fitted) %>%
+    ggplot() 
+    + aes(x=actual, y=predicted, color=gender) 
+    + geom_point() 
+    + geom_abline(color = 'red', slope = 1, intercept = 0) 
+    + facet_wrap(~gender) 
+    + labs(title = 'Actual vs predicted', 
+        subtitle = "Values predicted using a linear model all controls")
+
