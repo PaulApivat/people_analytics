@@ -1,8 +1,0 @@
-{
-  "apikey": "TZJtAcmDK3UkF5X8VVLxbkLb7nchNeHF2UueBK03nUsZ",
-  "iam_apikey_description": "Auto-generated for key c3cb6f4f-e477-4934-af28-75b76dc6014e",
-  "iam_apikey_name": "Auto-generated service credentials",
-  "iam_role_crn": "crn:v1:bluemix:public:iam::::serviceRole:Manager",
-  "iam_serviceid_crn": "crn:v1:bluemix:public:iam-identity::a/59fe733bad0b4d4180a2b01dacf5106e::serviceid:ServiceId-9e58b4d9-4a29-4f27-aa62-02289b9b89c0",
-  "url": "https://api.kr-seo.personality-insights.watson.cloud.ibm.com/instances/b6c4014c-8d86-4ef6-90d2-41ca7651a762"
-}
