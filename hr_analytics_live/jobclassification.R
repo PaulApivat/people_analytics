@@ -20,4 +20,3 @@ library(ada)
 # NOT FOUND
 MYdataset <- read_csv("https://hranalytics.netlify.com/data/jobclassinfo2.csv")
 
-
