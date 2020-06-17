@@ -4,3 +4,12 @@
 # Case Study: Personality Insights (IBM Watson Personality Insights)
 # source: https://hranalyticslive.netlify.app/16-personality.html
 
+# make account with IBM
+key = "aOWMNztQ_VVlz9fINhc3v67rtnJqcN6JuubQorAvhq"
+url = "https://gateway.watsonplatform.net/personality-insights/api/v3/profile?version=2017-10-13"
+uname="a4a4ea65-e8e7-492c-a95e-128f10fc5f"
+pword="LuFm4BELs"
+
+# library
+library(httr)
+library(janeaustenr)
