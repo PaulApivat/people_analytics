@@ -13,3 +13,14 @@ pword="LuFm4BELs"
 # library
 library(httr)
 library(janeaustenr)
+
+# POST a request to IBM API
+cr=POST(url, 
+        authenticate(uname, pword), 
+        content_type("text/plane;charset=utf-8"), 
+        accept_json(), 
+        body = paste(janeaustenr::emma, collapse = " "))
+
+
+# no access - 403
+status_code(cr)
