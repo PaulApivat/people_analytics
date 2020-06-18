@@ -70,3 +70,34 @@ MYident   <- "ID"
 MYignore  <- c("JobFamily", "JobFamilyDescription", "JobClass", "JobClassDescription", "PayGrade")
 MYweights <- NULL
 
+### Initial Exploratory Data Analysis
+
+# NOTE: geom_bar(stat = 'count') can substitute group_by
+
+# Number of Job Classifications per PG category
+MYdataset %>% 
+    ggplot() 
+    + aes(x = factor(PG)) 
+    + geom_bar(stat = 'count', width = 0.7, fill = 'steelblue') 
+    + theme_minimal() 
+    + coord_flip() 
+    + labs(title = 'Number of job classifications per PG category')
+
+MYdataset %>% 
+    ggplot() 
+    + aes(x = factor(JobFamilyDescription)) 
+    + geom_bar(stat = 'count', width = 0.7, fill = 'steelblue') 
+    + theme_minimal() 
+    + coord_flip() 
+    + labs(title = 'Number of job classifications per job family')
+
+# group variable before plotting (alternative to above)
+MYdataset %>% 
+    group_by(JobFamilyDescription) %>% 
+    tally(sort = TRUE) %>% 
+    ggplot(aes(x=JobFamilyDescription, y=n)) 
+    + geom_bar(stat = 'identity', fill = 'steelblue', width = 0.7) 
+    + theme_minimal() 
+    + coord_flip() 
+    + labs(title = 'Number of job classification per job family')
+
