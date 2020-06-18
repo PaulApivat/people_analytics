@@ -163,3 +163,51 @@ featurePlot(x = MYdataset[,7:13],
             plot = 'box', 
             auto.key = list(columns = 2))
 
+##### ------------- Build the MODEL -------------- #####
+
+#### Four classification algorithms:
+# decision tree
+# random forest
+# support vector machines
+# linear regression model
+
+### Decision Tree Algorithm
+
+library(rattle)
+library(rpart, quietly=TRUE)
+
+# crv = current rattle variables
+# reset random number seed to obtain same results each time
+crv$seed <- 42
+set.seed(crv$seed)
+
+# Build decision tree model
+# note: need to interpret classification tree
+MYrpart <- rpart(PG ~ ., 
+                data = MYdataset[, c(MYinput, MYtarget)], 
+                method = 'class', 
+                parms = list(split='information'), 
+                control = rpart.control(minsplit = 10, 
+                minbucket = 2, 
+                maxdepth = 10, 
+                usesurrogate = 0, 
+                maxsurrogate = 0))
+
+print(MYrpart)
+
+printcp(MYrpart)
+
+### Random Forest Algorithm
+library(randomForest, quietly=TRUE)
+
+set.seed(crv$seed)
+
+MYrf <- randomForest::randomForest(PG ~ ., 
+                        data=MYdataset[,c(MYinput, MYtarget)], 
+                        ntree=500, 
+                        mtry=2, 
+                        importance=TRUE, 
+                        na.action=randomForest::na.roughfix, replace=FALSE)
+
+rn <- round(randomForest::importance(MYrf), 2)
+rn[order(rn[,3], decreasing = TRUE),]
