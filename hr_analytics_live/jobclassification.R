@@ -116,3 +116,32 @@ MYdataset %>%
     + geom_bar(stat = 'identity', width = 0.7, fill = 'steelblue') 
     + labs(title = 'Number of job classifications per Education Level')
 
+# Number of job classifications per Experience level
+MYdataset %>% 
+    ggplot() 
+    + aes(Experience) 
+    + geom_bar(stat = 'count', width = 0.7, fill = 'steelblue') 
+    + labs(title = 'Number of job classifications per experience')
+
+# Number of job classification per Problem Solving
+MYdataset %>% 
+    ggplot() 
+    + aes(ProblemSolving) 
+    + geom_bar(stat = 'count', width = 0.7, fill = 'steelblue') 
+    + labs(title = 'Number of job classifications per problem solving')
+
+# Number of job classification per Supervision
+MYdataset %>% 
+    ggplot() 
+    + aes(Supervision) 
+    + geom_bar(stat = 'count', width = 0.7, fill = 'steelblue') 
+    + labs(title = 'Number of job classifications per supervision')
+
+# Number of job classification per Contact level
+MYdataset %>% 
+    ggplot() 
+    + aes(ContactLevel) 
+    + geom_bar(stat = 'count', width = 0.7, fill = 'steelblue') 
+    + labs(title = 'Number of job classifications per contact level')
+
+
