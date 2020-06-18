@@ -144,4 +144,22 @@ MYdataset %>%
     + geom_bar(stat = 'count', width = 0.7, fill = 'steelblue') 
     + labs(title = 'Number of job classifications per contact level')
 
+### Use Caret package for graphical representation of Predictors of Pay Grade (PG)
+library(caret)
+
+MYdataset$PG <- as.factor(MYdataset$PG)
+
+# distribution of predictors of PG
+featurePlot(x = MYdataset[,7:13], 
+            y = MYdataset$PG, 
+            plot = 'density', 
+            auto.key = list(columns = 2))
+
+# range of values of predictors by PG
+# PG ordered in ascending order PG1 to PG10
+# we expect increasing levels as we move up paygrades from left to right
+featurePlot(x = MYdataset[,7:13], 
+            y = MYdataset$PG, 
+            plot = 'box', 
+            auto.key = list(columns = 2))
 
