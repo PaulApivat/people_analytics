@@ -211,3 +211,203 @@ MYrf <- randomForest::randomForest(PG ~ .,
 
 rn <- round(randomForest::importance(MYrf), 2)
 rn[order(rn[,3], decreasing = TRUE),]
+
+### Support Vector Machine
+library(kernlab, quietly=TRUE)
+
+# build support vector machine model
+set.seed(crv$seed)
+
+MYksvm <- ksvm(as.factor(PG) ~., 
+               data=MYdataset[,c(MYinput, MYtarget)], 
+               kernel='rbfdot', 
+               prob.model=TRUE)
+
+MYksvm
+
+### Linear Regression Model
+library(nnet, quietly=TRUE)
+library(car, quietly=TRUE)
+
+MYglm <- multinom(PG ~ ., 
+        data = MYdataset[,c(MYinput, MYtarget)], 
+        trace=FALSE, maxit=1000)
+
+rattle.print.summary.multinom(summary(MYglm, Wald.ratios = TRUE))
+
+# Log Likelihood: -6.545 (72 df)
+cat(sprintf("Log Likelihood: %.3f (%d df)", logLik(MYglm)[1], attr(logLik(MYglm), "df")))
+
+# Pseudo R-Square: 0.99516038
+if (is.null(MYglm$na.action)) omitted <- TRUE else omitted <- -MYglm$na.action
+cat(sprintf("Pseudo R-Square: %.8f",cor(apply(MYglm$fitted.values, 1, function(x) which(x == max(x))),
+as.integer(MYdataset[omitted,]$PG))))
+
+cat('==== ANOVA ====')
+
+print(Anova(MYglm))
+
+##### PLOT DECISION TREE
+
+# Plot the resulting Decision Tree. 
+
+# We use the rpart.plot package.
+
+fancyRpartPlot(MYrpart, main="Decision Tree MYdataset $ PG")
+
+
+##### Evaluation of Best Fitting Model
+
+##### Predict new job classsifications utilising the Decision Tree model.
+
+MYpr <- predict(MYrpart, newdata=MYdataset[,c(MYinput, MYtarget)], type="class")
+
+# Generate the confusion matrix showing counts.
+
+table(MYdataset[,c(MYinput, MYtarget)]$PG, MYpr,
+        dnn=c("Actual", "Predicted"))
+
+# Generate the confusion matrix showing proportions and misclassification error in the last column. Misclassification error, represents how often is the prediction wrong,
+
+pcme <- function(actual, cl)
+{
+  x <- table(actual, cl)
+  nc <- nrow(x)
+  tbl <- cbind(x/length(actual),
+               Error=sapply(1:nc,
+                 function(r) round(sum(x[r,-r])/sum(x[r,]), 2)))
+  names(attr(tbl, "dimnames")) <- c("Actual", "Predicted")
+  return(tbl)
+}
+
+per <- pcme(MYdataset[,c(MYinput, MYtarget)]$PG, MYpr)
+round(per, 2)
+
+# First we calculate the overall miscalculation rate (also known as error rate or percentage error).
+#Please note that diag(per) extracts the diagonal of confusion matrix.
+
+cat(100*round(1-sum(diag(per), na.rm=TRUE), 2)) # 23%
+
+# Calculate the averaged miscalculation rate for each job classification. 
+# per[,"Error"] extracts the last column, which represents the miscalculation rate per.
+
+cat(100*round(mean(per[,"Error"], na.rm=TRUE), 2))  # 28%
+
+##### RANDOM FOREST ######
+# Generate the Confusion Matrix for the Random Forest model.
+
+# Obtain the response from the Random Forest model.
+
+MYpr <- predict(MYrf, newdata=na.omit(MYdataset[,c(MYinput, MYtarget)]))
+
+# Generate the confusion matrix showing counts.
+
+table(na.omit(MYdataset[,c(MYinput, MYtarget)])$PG, MYpr,
+        dnn=c("Actual", "Predicted"))
+
+# Generate the confusion matrix showing proportions.
+
+pcme <- function(actual, cl)
+{
+  x <- table(actual, cl)
+  nc <- nrow(x)
+  tbl <- cbind(x/length(actual),
+               Error=sapply(1:nc,
+                 function(r) round(sum(x[r,-r])/sum(x[r,]), 2)))
+  names(attr(tbl, "dimnames")) <- c("Actual", "Predicted")
+  return(tbl)
+}
+
+per <- pcme(na.omit(MYdataset[,c(MYinput, MYtarget)])$PG, MYpr)
+round(per, 2)
+
+# Calculate the overall error percentage. (5%)
+
+cat(100*round(1-sum(diag(per), na.rm=TRUE), 2))
+
+# Calculate the averaged class error percentage. (9%)
+
+cat(100*round(mean(per[,"Error"], na.rm=TRUE), 2))
+
+####### Support Vector Machine
+
+# Generate the Confusion Matrix for the SVM model.
+
+# Obtain the response from the SVM model.
+
+MYpr <- kernlab::predict(MYksvm, newdata=na.omit(MYdataset[,c(MYinput, MYtarget)]))
+
+# Generate the confusion matrix showing counts.
+
+table(na.omit(MYdataset[,c(MYinput, MYtarget)])$PG, MYpr,
+        dnn=c("Actual", "Predicted"))
+
+# Generate the confusion matrix showing proportions.
+
+pcme <- function(actual, cl)
+{
+  x <- table(actual, cl)
+  nc <- nrow(x)
+  tbl <- cbind(x/length(actual),
+               Error=sapply(1:nc,
+                 function(r) round(sum(x[r,-r])/sum(x[r,]), 2)))
+  names(attr(tbl, "dimnames")) <- c("Actual", "Predicted")
+  return(tbl)
+}
+
+per <- pcme(na.omit(MYdataset[,c(MYinput, MYtarget)])$PG, MYpr)
+round(per, 2)
+
+# Calculate the overall error percentage (18%)
+
+cat(100*round(1-sum(diag(per), na.rm=TRUE), 2))
+
+# Calculate the averaged class error percentage (29%)
+
+cat(100*round(mean(per[,"Error"], na.rm=TRUE), 2))
+
+########## LINEAR REGRESSION
+
+# Generate the confusion matrix for the linear regression model.
+
+# Obtain the response from the Linear model.
+
+MYpr <- predict(MYglm, newdata=MYdataset[,c(MYinput, MYtarget)])
+
+# Generate the confusion matrix showing counts.
+
+table(MYdataset[,c(MYinput, MYtarget)]$PG, MYpr,
+        dnn=c("Actual", "Predicted"))
+
+# Generate the confusion matrix showing proportions.
+
+pcme <- function(actual, cl)
+{
+  x <- table(actual, cl)
+  nc <- nrow(x)
+  tbl <- cbind(x/length(actual),
+               Error=sapply(1:nc,
+                 function(r) round(sum(x[r,-r])/sum(x[r,]), 2)))
+  names(attr(tbl, "dimnames")) <- c("Actual", "Predicted")
+  return(tbl)
+}
+
+per <- pcme(MYdataset[,c(MYinput, MYtarget)]$PG, MYpr)
+round(per, 2)
+
+# Calculate the overall error percentage. (6%)
+
+cat(100*round(1-sum(diag(per), na.rm=TRUE), 2))
+
+# Calculate the averaged class error percentage (11%)
+
+cat(100*round(mean(per[,"Error"], na.rm=TRUE), 2))
+
+########### DEPLOY THE MODEL #############
+
+DeployDataset <- readxl::read_xlsx("Deploydata.xlsx")
+
+# predicted job grade is PG05
+PredictedJobGrade <- predict(MYrf, newdata=DeployDataset)
+PredictedJobGrade
+
