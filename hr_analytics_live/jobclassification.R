@@ -30,4 +30,42 @@ MYdataset <- read_csv("https://hranalytics.netlify.com/data/jobclassinfo2.csv")
 
 df <- read_csv("jobclassinfo2.csv")
 
+## at-a-glance view of data
+## note: jobclassinfo2.csv contains (subjective?) eval data that was made prior (ie., 'OrgImpact', 'ProblemSolving')
+
+str(df)
+summary(df)
+
+######### Job Classification Objective: predict PG category (representation of numeric paygrade) ##########
+
+#### Organize the data
+#### note: narrow down info to just data used in the model
+
+# number of observations (rows)
+df_obs <- nrow(df)
+
+# 70% of observation forms training dataset (n = 46)
+df_sample <- df_train <- sample(nrow(df), 0.7*df_obs)
+
+# 14% of observations forms validation dataset (n = 9)
+df_validate <- sample(setdiff(seq_len(nrow(df)), df_train), 0.14*df_obs)
+
+# remaining observations forms test dataset (n = 11)
+df_test <- setdiff(setdiff(seq_len(nrow(df)), df_train), df_validate)
+
+
+# The following variable selections have been noted.
+MYinput <- c("EducationLevel", "Experience", "OrgImpact", "ProblemSolving",
+     "Supervision", "ContactLevel", "FinancialBudget")
+
+MYnumeric <- c("EducationLevel", "Experience", "OrgImpact", "ProblemSolving",
+     "Supervision", "ContactLevel", "FinancialBudget")
+
+MYcategoric <- NULL
+
+MYtarget  <- "PG"
+MYrisk    <- NULL
+MYident   <- "ID"
+MYignore  <- c("JobFamily", "JobFamilyDescription", "JobClass", "JobClassDescription", "PayGrade")
+MYweights <- NULL
 
