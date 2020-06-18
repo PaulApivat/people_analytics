@@ -17,6 +17,17 @@ library(rpart.plot)
 library(pROC)
 library(ada)
 
+# load multiple libaries
+multiple_libraries <- c('tidyverse', 'caret', 'rattle', 'rpart', 'randomForest', 'kernlab', 'nnet', 'car', 'rpart.plot', 'pROC', 'ada')
+
+lapply(multiple_libraries, require, character.only = TRUE)
+
 # NOT FOUND
 MYdataset <- read_csv("https://hranalytics.netlify.com/data/jobclassinfo2.csv")
+
+## downloaded jobclassinfo2.csv from Archive HR Datasets
+## source: https://hranalyticslive.netlify.app/f-appendixf
+
+df <- read_csv("jobclassinfo2.csv")
+
 
