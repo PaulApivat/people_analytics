@@ -4,6 +4,9 @@
 # Case Study: Job Classification
 # source: https://hranalyticslive.netlify.app/19-job-classification.html
 
+# load
+load(file = "jobclassification.RData")
+
 # library
 library(tidyverse)
 library(caret)
