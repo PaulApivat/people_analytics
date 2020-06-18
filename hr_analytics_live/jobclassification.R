@@ -83,6 +83,7 @@ MYdataset %>%
     + coord_flip() 
     + labs(title = 'Number of job classifications per PG category')
 
+# Number of Job Classifications per Job Family
 MYdataset %>% 
     ggplot() 
     + aes(x = factor(JobFamilyDescription)) 
@@ -100,4 +101,18 @@ MYdataset %>%
     + theme_minimal() 
     + coord_flip() 
     + labs(title = 'Number of job classification per job family')
+
+# Number of job classifications per Education Level
+MYdataset %>% 
+    ggplot() 
+    + aes(EducationLevel) 
+    + geom_bar(stat = 'count', width = 0.7, fill = 'steelblue') 
+    + ggtitle('Number of job classifications per Education level')
+
+MYdataset %>% 
+    group_by(EducationLevel) %>% 
+    tally(sort = TRUE) %>% 
+    ggplot(aes(x=reorder(EducationLevel, n), y=n)) 
+    + geom_bar(stat = 'identity', width = 0.7, fill = 'steelblue') 
+    + labs(title = 'Number of job classifications per Education Level')
 
